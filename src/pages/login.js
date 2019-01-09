@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { StackActions, NavigationActions } from 'react-navigation';
 import {
   StyleSheet,
   Text,
@@ -7,6 +8,7 @@ import {
   View,
   TouchableOpacity,
   KeyboardAvoidingView,
+  AsyncStorage,
 } from 'react-native';
 
 export default class Login extends Component {
@@ -16,9 +18,34 @@ export default class Login extends Component {
     username: '',
   }
 
-  handleInputChange = username => this.setState([username]);
+  async componentDidMount() {
+    const username = await AsyncStorage.getItem('@GoTwitter:username');
+    if (username) {
+      this.navigateToTimeline();
+    }
+  }
 
-  handleLogin = () => { }
+  handleInputChange = username => this.setState({ username });
+
+  handleLogin = async () => {
+    const { username } = this.state;
+
+    if (!username.length) return;
+
+    await AsyncStorage.setItem('@GoTwitter:username', username);
+    this.navigateToTimeline();
+  };
+
+  navigateToTimeline = () => {
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({ routeName: 'TimeLine' }),
+      ],
+    });
+
+    this.props.navigation.dispatch(resetAction);
+  }
 
   render() {
     return (
@@ -32,6 +59,8 @@ export default class Login extends Component {
             placeholder={'Nome de usuário'}
             value={this.state.username}
             onChangeText={this.handleInputChange}
+            returnKeyType="send"
+            onSubmitEditing={this.handleLogin}
           />
           <TouchableOpacity
             style={styles.button}
