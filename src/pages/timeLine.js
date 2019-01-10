@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import socket from 'socket.io-client';
 import {
+  FlatList,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
-  FlatList,
 } from 'react-native';
-
-import api from '../services/api';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import Tweet from '../components/tweet';
+import api from '../services/api';
+
 
 export default class TimeLine extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -17,10 +17,10 @@ export default class TimeLine extends Component {
     headerRight: (
       <TouchableOpacity onPress={() => navigation.navigate('New')} >
         <Icon
-          style={{ marginRight: 20 }}
-          name={'add-circle-outline'}
+          style={styles.icon}
+          name="add-circle-outline"
           size={24}
-          color={'#4BB0EE'}
+          color="#4BB0EE"
         />
       </TouchableOpacity>
     ),
@@ -31,8 +31,24 @@ export default class TimeLine extends Component {
   }
 
   async componentDidMount() {
+    this.subscribeToEnvents();
     const res = await api.get('tweets');
     this.setState({ tweets: res.data });
+  }
+
+  subscribeToEnvents() {
+    const io = socket('http://10.0.2.2:3000');
+    io.on('tweet', (data) => {
+      this.setState({ tweets: [data, ...this.state.tweets] });
+    });
+
+    io.on('like', (data) => {
+      this.setState({
+        tweets: this.state.tweets.map(
+          tweet => (tweet._id === data._id ? data : tweet),
+        ),
+      });
+    });
   }
 
   render() {
@@ -52,5 +68,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
+  },
+  icon: {
+    marginRight: 20,
   },
 });
