@@ -1,5 +1,5 @@
 # Twitter Clone | Mobile :bird:
-[![Known Vulnerabilities](https://snyk.io/test/github//joaaomanooel/twitter-clone-mobile/badge.svg)](https://snyk.io/test/github//joaaomanooel/twitter-clone-mobile)
+[![Build Status](https://app.bitrise.io/app/20c53d8100ec4079/status.svg?token=I8cwnWwXVntMaU_syxxhWQ)](https://app.bitrise.io/app/20c53d8100ec4079) [![Known Vulnerabilities](https://snyk.io/test/github//joaaomanooel/twitter-clone-mobile/badge.svg)](https://snyk.io/test/github//joaaomanooel/twitter-clone-mobile)
 
 ***
 ## Contributing
