@@ -33,11 +33,13 @@ export default class TimeLine extends Component {
   async componentDidMount() {
     this.subscribeToEnvents();
     const res = await api.get('tweets');
+    console.log('res', res);
+
     this.setState({ tweets: res.data });
   }
 
   subscribeToEnvents() {
-    const io = socket('http://10.0.2.2:3000');
+    const io = socket('https://twitter-clone-backend.herokuapp.com');
     io.on('tweet', (data) => {
       this.setState({ tweets: [data, ...this.state.tweets] });
     });
